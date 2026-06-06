@@ -1,57 +1,35 @@
-# ====================================================================
-# 1. ARCHIVOS GLOBALES Y DE ENTORNO
-# ====================================================================
-# ¡CRÍTICO! Nunca subir las credenciales de la base de datos a GitHub
+# --- ARCHIVOS DEL SISTEMA Y ENTORNO (RAÍZ) ---
 .env
 .env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# Archivos del Sistema Operativo
+.env.*.local
+dist/
+build/
+node_modules/
 .DS_Store
 Thumbs.db
-desktop.ini
 
-# Archivos de editores de código
-.vscode/
+# --- CONFIGURACIÓN ESPECÍFICA DE NESTJS (BACKEND) ---
+/backend/node_modules/
+/backend/dist/
+/backend/.env
+/backend/.env.development
+/backend/.env.production
+/backend/npm-debug.log*
+
+# --- CONFIGURACIÓN ESPECÍFICA DEL FRONTEND ---
+/frontend/node_modules/
+/frontend/dist/
+/frontend/build/
+/frontend/.env
+/frontend/.env.local
+/frontend/.next/
+/frontend/out/
+
+# --- IDEs Y EDITORES ---
 .idea/
+.vscode/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.swp
-
-# ====================================================================
-# 2. CONFIGURACIÓN PARA EL BACKEND (NestJS / Node)
-# ====================================================================
-backend/node_modules/
-backend/dist/
-backend/coverage/
-backend/.nyc_output
-backend/npm-debug.log*
-backend/yarn-debug.log*
-backend/yarn-error.log*
-backend/.pnpm-debug.log*
-
-# ====================================================================
-# 3. CONFIGURACIÓN PARA EL FRONTEND (React)
-# ====================================================================
-frontend/node_modules/
-frontend/dist/
-frontend/build/
-frontend/.out/
-frontend/.next/
-frontend/stats.html
-
-# ====================================================================
-# 4. CONFIGURACIÓN DE LOGS Y DOCKER
-# ====================================================================
-*.log
-logs/
-*.pid
-*.seed
-*.pid.lock
-
-# Datos locales de Docker (si usas volúmenes locales en carpetas)
-.docker/
