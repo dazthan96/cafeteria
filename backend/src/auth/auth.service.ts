@@ -22,27 +22,45 @@ export class AuthService {
     private readonly jwtService:JwtService
   ) {}
 
-  async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
-    return true;
-    if (!tokenCaptcha) {
-      throw new BadRequestException('El token del CAPTCHA es obligatorio');
-    }
-
-    // REQUISITO: Tu clave secreta provista por Google reCAPTCHA
-    const secretKey = "6Lc9VhEtAAAAAINldOmxT25S-qOaUEMzqFnnGSnQ"; 
-    const url = 'https://google.com' + secretKey + '&response=' + tokenCaptcha;
-
-    try {
-      const respuesta = await firstValueFrom(this.httpService.post(url));
-      return respuesta.data.success; // Devuelve true si pasó la validación, false si no
-    } catch (error:any) {
-      console.log("ERROR REAL DE GOOGLE:", error.message); 
-      throw new BadRequestException('Error al verificar el CAPTCHA con el servidor externo');
-    }
+async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
+  return true;
+  console.log('Token recibido:', tokenCaptcha)
+  if (!tokenCaptcha) {
+    throw new BadRequestException('El token del CAPTCHA es obligatorio');
   }
+
+  const secretKey = "6LfXbxQtAAAAAPkCvZAU-GqPL1cCgp5TAO9ZQDg0"; 
+  
+  // 1. Usamos el constructor nativo de URL para no tener errores de texto
+  const urlConfig = new URL('https://google.com');
+  urlConfig.searchParams.append('secret', secretKey);
+  urlConfig.searchParams.append('response', tokenCaptcha);
+
+  try {
+    // 2. Hacemos la petición usando .get() y la URL limpia (.href)
+    const respuesta = await firstValueFrom(this.httpService.get(urlConfig.href));
+
+    if (!respuesta.data.success) {
+      console.log("Detalle del fallo de Google:", respuesta.data['error-codes']);
+      throw new BadRequestException('Validación de CAPTCHA incorrecta o expirada');
+    }
+
+    return true; 
+  } catch (error: any) {
+    console.error("ERROR EN VALIDACIÓN CAPTCHA:", error.message); 
+    
+    if (error instanceof BadRequestException) {
+      throw error;
+    }
+    
+    throw new BadRequestException('Error al verificar el CAPTCHA con el servidor externo');
+  }
+}
+
 
   async login(body: any, ip: string, browser: string) {
     const { username, contrasenia, captchaToken } = body;
+    console.log('Token recibido:', captchaToken)
     if(!contrasenia){throw new BadRequestException('contraseña requerida')}
     // A. VALIDACIÓN OBLIGATORIA DEL CAPTCHA
     const esHumano = await this.validarCaptcha(captchaToken);

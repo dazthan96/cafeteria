@@ -91,7 +91,7 @@ export function Login(){
                             <Box sx={{display:'flex', justifyContent:'center', marginY:2, minHeight:'78px', width:'100%'}}>
                                 <ReCAPTCHA
                                     ref={captchaRef}
-                                    sitekey="6Lc9VhEtAAAAAHf9wMdJXdeOBJyF0qK3xhEInWYx"
+                                    sitekey="6LfXbxQtAAAAAIGZOlIQoTVo7Gu0qfU-sbiUdJ1H"
                                     onChange={alCambiarCaptcha}
                                 />
                             </Box>
