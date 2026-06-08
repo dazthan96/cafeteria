@@ -7,18 +7,26 @@ import { VentasModule } from './ventas/ventas.module';
 import { DetallesVentaModule } from './detalles-venta/detalles-venta.module';
 import { RegistroAccesoModule } from './registro-acceso/registro-acceso.module';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { config } from 'node:process';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type:'postgres',
-      host:'localhost',
-      port: 5432,
-      username:'postgres',
-      password:'RosmerY06011996',
-      database:'cafeteria2',
-      autoLoadEntities:true,
-      synchronize:true
+    ConfigModule.forRoot({isGlobal:true}),
+    TypeOrmModule.forRootAsync({
+      imports:[ConfigModule],
+      useFactory:(config:ConfigService)=>({
+        type:'postgres',
+        host:config.get('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username:config.get('DB_USERNAME'),
+        password:config.get('DB_PASSWORD'),
+        database:config.get('DB_DATABASE'),
+        autoLoadEntities:true,
+        synchronize:true,
+      }),
+      inject:[ConfigService]
+      
     }),
     CategoriasModule,
     ProductosModule,
