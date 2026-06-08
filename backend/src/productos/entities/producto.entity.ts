@@ -1,5 +1,6 @@
 import { Categoria } from "src/categorias/entities/categoria.entity";
-import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { DetallesVenta } from "src/detalles-venta/entities/detalles-venta.entity";
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Producto {
@@ -21,5 +22,8 @@ export class Producto {
     @ManyToOne(()=>Categoria, (categoria)=>categoria.productos)
     @JoinColumn({name:'id_categoria'})
     categoria!:Categoria
+
+    @OneToMany(()=>DetallesVenta, (detalles_venta)=>detalles_venta.producto)
+    detalles_venta!:DetallesVenta[];
 
 }
