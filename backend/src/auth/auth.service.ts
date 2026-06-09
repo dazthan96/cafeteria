@@ -23,6 +23,7 @@ export class AuthService {
   ) {}
 
 async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
+  console.log(tokenCaptcha)
   return true;
   console.log('Token recibido:', tokenCaptcha)
   if (!tokenCaptcha) {
@@ -31,13 +32,11 @@ async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
 
   const secretKey = "6LfXbxQtAAAAAPkCvZAU-GqPL1cCgp5TAO9ZQDg0"; 
   
-  // 1. Usamos el constructor nativo de URL para no tener errores de texto
   const urlConfig = new URL('https://google.com');
   urlConfig.searchParams.append('secret', secretKey);
   urlConfig.searchParams.append('response', tokenCaptcha);
 
   try {
-    // 2. Hacemos la petición usando .get() y la URL limpia (.href)
     const respuesta = await firstValueFrom(this.httpService.get(urlConfig.href));
 
     if (!respuesta.data.success) {
@@ -60,12 +59,10 @@ async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
 
   async login(body: any, ip: string, browser: string) {
     const { username, contrasenia, captchaToken } = body;
-    console.log('Token recibido:', captchaToken)
+    //console.log('Token recibido:', captchaToken)
     if(!contrasenia){throw new BadRequestException('contraseña requerida')}
-    // A. VALIDACIÓN OBLIGATORIA DEL CAPTCHA
     const esHumano = await this.validarCaptcha(captchaToken);
     if (!esHumano) {
-      // Registramos intento fallido por culpa del CAPTCHA
       await this.logsService.registrarIngreso(null, 'Intento Fallido', ip, browser);
       throw new UnauthorizedException('Validación de CAPTCHA incorrecta. Intente de nuevo.');
     }

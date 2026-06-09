@@ -33,8 +33,6 @@ export function AppRoutes(){
                         </Route>
                     </Route>
                 </Route>    
-                
-                
                 <Route path="*" element={<Navigate to="/" replace />}/>
             </Routes>
         </BrowserRouter>
