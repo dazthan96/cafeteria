@@ -73,7 +73,7 @@ export function Estadisticas():React.ReactNode{
                                     fill="#8884d8"
                                     dataKey="value"
                                 >
-                                    {datosProductos.map(function( index){
+                                    {datosProductos.map(function(index){
                                         return (
                                             <Cell key={'cell-'+index} fill={COLORES_TORTA[index % COLORES_TORTA.length]}/>
                                         )
