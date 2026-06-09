@@ -13,7 +13,7 @@ import { Layout } from "../components/Layout";
 import { Usuarios } from "../features/auth/Usuarios";
 
 export function AppRoutes(){
-    const {token, usuario} = useContext(AuthContext);
+    const {token} = useContext(AuthContext);
 
     return (
         <BrowserRouter>

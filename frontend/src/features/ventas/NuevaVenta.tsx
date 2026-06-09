@@ -74,7 +74,7 @@ export function NuevaVenta():React.ReactNode{
                 detalles:carrito
             };
             try {
-                const respuesta = await api.post('/ventas',payload);
+                await api.post('/ventas',payload);
                 alert ('!Venta registrada con exito');
                 setCarrito([]);
                 setCiCliente('');
