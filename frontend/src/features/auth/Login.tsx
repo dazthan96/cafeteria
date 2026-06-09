@@ -14,18 +14,19 @@ export function Login(){
 
     const {loginState} = useContext(AuthContext);
     const captchaRef = useRef<ReCAPTCHA>(null);
-
+    
     function alCambiarCaptcha(token:string|null){
         setCaptchaToken(token)
     }
     async function alEnviarFormulario(evento:any){
         evento.preventDefault();
         setErrorMensaje(null)
-
+        alCambiarCaptcha("tokensimulado")
+        /*
         if(!captchaToken){
             setErrorMensaje('PorFavor, marque la casilla de no soy un robot');
             return;
-        }
+        }*/
         setCargando(true);
         try{
             const respuesta = await api.post('/auth/login',{
@@ -88,6 +89,7 @@ export function Login(){
                                 value={contrasenia}
                                 onChange={function (e) {setContrasenia(e.target.value)}}
                             />
+                            {/*
                             <Box sx={{display:'flex', justifyContent:'center', marginY:2, minHeight:'78px', width:'100%'}}>
                                 <ReCAPTCHA
                                     ref={captchaRef}
@@ -95,6 +97,7 @@ export function Login(){
                                     onChange={alCambiarCaptcha}
                                 />
                             </Box>
+                            */}
                             <Button
                                 type="submit"
                                 fullWidth
