@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import {JwtService} from '@nestjs/jwt'
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
@@ -22,39 +23,49 @@ export class AuthService {
     private readonly jwtService:JwtService
   ) {}
 
-async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
-  //console.log(tokenCaptcha)
-  return true;
-  console.log('Token recibido:', tokenCaptcha)
-  if (!tokenCaptcha) {
-    throw new BadRequestException('El token del CAPTCHA es obligatorio');
-  }
-
-  const secretKey = "6LfXbxQtAAAAAPkCvZAU-GqPL1cCgp5TAO9ZQDg0"; 
-  
-  const urlConfig = new URL('https://google.com');
-  urlConfig.searchParams.append('secret', secretKey);
-  urlConfig.searchParams.append('response', tokenCaptcha);
-
-  try {
-    const respuesta = await firstValueFrom(this.httpService.get(urlConfig.href));
-
-    if (!respuesta.data.success) {
-      console.log("Detalle del fallo de Google:", respuesta.data['error-codes']);
-      throw new BadRequestException('Validación de CAPTCHA incorrecta o expirada');
+  async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
+    //console.log(tokenCaptcha)
+    return true;
+    //console.log('Token recibido:', tokenCaptcha)
+    if (!tokenCaptcha) {
+      throw new BadRequestException('El token del CAPTCHA es obligatorio');
     }
-
-    return true; 
-  } catch (error: any) {
-    console.error("ERROR EN VALIDACIÓN CAPTCHA:", error.message); 
-    
-    if (error instanceof BadRequestException) {
-      throw error;
+    const config = new ConfigService(); 
+    const secretKey = config.get('CAPTCHA_SECRET_KEY')
+    const urlConfig = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${tokenCaptcha}`
+    try {
+      const respuesta = await firstValueFrom(this.httpService.post(urlConfig));
+      return respuesta.data.success;
+    } catch (error:any) {
+      console.log("Error de google", error.message);
+      throw new BadRequestException("Error al verficar el catpcha con el servidor")
     }
+    /*
+    const secretKey = "6LfXbxQtAAAAAPkCvZAU-GqPL1cCgp5TAO9ZQDg0"; 
     
-    throw new BadRequestException('Error al verificar el CAPTCHA con el servidor externo');
+    const urlConfig = new URL('https://google.com');
+    urlConfig.searchParams.append('secret', secretKey);
+    urlConfig.searchParams.append('response', tokenCaptcha);
+
+    try {
+      const respuesta = await firstValueFrom(this.httpService.get(urlConfig.href));
+
+      if (!respuesta.data.success) {
+        console.log("Detalle del fallo de Google:", respuesta.data['error-codes']);
+        throw new BadRequestException('Validación de CAPTCHA incorrecta o expirada');
+      }
+
+      return true; 
+    } catch (error: any) {
+      console.error("ERROR EN VALIDACIÓN CAPTCHA:", error.message); 
+      
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      
+      throw new BadRequestException('Error al verificar el CAPTCHA con el servidor externo');
+    }*/
   }
-}
 
 
   async login(body: any, ip: string, browser: string) {
