@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
 async validarCaptcha(tokenCaptcha: string): Promise<boolean> {
-  console.log(tokenCaptcha)
+  //console.log(tokenCaptcha)
   return true;
   console.log('Token recibido:', tokenCaptcha)
   if (!tokenCaptcha) {

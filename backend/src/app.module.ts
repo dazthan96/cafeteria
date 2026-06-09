@@ -24,6 +24,9 @@ import { config } from 'node:process';
         database:config.get('DB_DATABASE'),//||'cafeteria2',
         autoLoadEntities:true,
         synchronize:true,
+        ssl:{
+          rejectUnauthorized:false
+        }
       }),
       inject:[ConfigService]
       
